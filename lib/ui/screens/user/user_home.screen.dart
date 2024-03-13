@@ -1,17 +1,22 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, sort_child_properties_last, unused_import
 
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:bikrra_app/classes/home_screen.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_order_list.screen.dart';
 import 'package:bikrra_app/ui/screens/user/user_product_favorite.screen.dart';
 import 'package:bikrra_app/ui/screens/user/user_see_all_categories.screen.dart'
     hide CategoriesWidget;
 import 'package:bikrra_app/ui/screens/user/user_shopping_cart.screen.dart';
 import 'package:bikrra_app/ui/widgets/categories.widget.dart';
+import 'package:bikrra_app/ui/widgets/home_screen.widget.dart';
 import 'package:bottom_bar/bottom_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../product_list.screen.dart';
 
@@ -25,6 +30,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   // late Stream<QuerySnapshot> data;
 
   int activeIndex = 3;
+  int carouselIndex = 0;
   @override
   void initState() {
     // data = firestore
@@ -88,7 +94,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    '2',
+                    context.watch<ProductCartProvider>().cartCount.toString(),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white,
@@ -200,11 +206,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               child: TextField(
                 readOnly: true,
                 decoration: InputDecoration(
-                  hintText: 'البحث',
+                  hintText: 'گەران',
                   contentPadding: EdgeInsets.symmetric(vertical: 10),
                   hintStyle: TextStyle(
                     fontSize: 16,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Peshang',
                     color: AppColors.textColor.withOpacity(0.5),
                     fontWeight: FontWeight.bold,
                   ),
@@ -233,95 +239,49 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 ),
               ),
             ),
-            Container(
-              height: 160,
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: DecorationImage(
-                  image: AssetImage('assets/wedding_image.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: AppColors.mainPinkColor.withOpacity(0.3),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 40),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: MaterialButton(
-                        onPressed: () {},
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: AppColors.mainPinkColor,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'الطلبات الخاصة',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: AppColors.kButtonsAndSecondaryBrownColor,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              ),
+            SizedBox(
+              height: 10,
             ),
+            CarouselSlider(
+                options: CarouselOptions(
+                  clipBehavior: Clip.none,
+                  height: 180,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 5),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.easeInOut,
+                  pauseAutoPlayOnTouch: true,
+                  aspectRatio: 1.0,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      carouselIndex = index;
+                    });
+                  },
+                ),
+                items: [
+                  HomeScreenWidget(
+                      homeScreenC: HomeScreenC(
+                    image: 'assets/wedding_image.png',
+                    text: 'هۆڵی گونجاو هەڵبژێرە',
+                  )),
+                  HomeScreenWidget(
+                      homeScreenC: HomeScreenC(
+                    image: 'assets/wedding_card.jpg',
+                    text: 'کارتی بانگەشە داوا بکە',
+                  )),
+                ]),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'التصنيفات',
+                    'بەشەکان',
                     style: TextStyle(
+                      fontFamily: 'Peshang',
                       fontSize: 24,
                       color: AppColors.kButtonsAndSecondaryBrownColor,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      pushScreen(context, UserSeeAllCategoriesScreen());
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          'عرض الكل',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.kButtonsAndSecondaryBrownColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Icon(
-                          FontAwesomeIcons.chevronLeft,
-                          size: 16,
-                          color: AppColors.kButtonsAndSecondaryBrownColor,
-                        ),
-                      ],
                     ),
                   ),
                 ],
@@ -336,22 +296,36 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
                   CategoryWidget(
-                    type: 'دونات',
-                    image: 'assets/donut_cake.png',
+                    type: 'مۆبیلیا',
+                    image: 'assets/category_icons/armchair.png',
                   ),
                   SizedBox(
-                    width: 10,
+                    width: 5,
                   ),
                   CategoryWidget(
-                    type: 'اعياد الميلاد',
-                    image: 'assets/cake_icons/birthday_cake.png',
+                    type: 'فاشیۆن دیزاینەر',
+                    image: 'assets/category_icons/gown.png',
                   ),
                   SizedBox(
-                    width: 10,
+                    width: 5,
                   ),
                   CategoryWidget(
-                    type: 'كيك الزفاف',
-                    image: 'assets/cake_icons/wedding_cake.png',
+                    type: 'هۆڵی ئاهەنگ',
+                    image: 'assets/category_icons/hall.png',
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  CategoryWidget(
+                    type: 'ئارایشگا',
+                    image: 'assets/category_icons/makeup.png',
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  CategoryWidget(
+                    type: 'فۆتۆگرافەر',
+                    image: 'assets/category_icons/photographer.png',
                   ),
                 ],
               ),
@@ -365,8 +339,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'المنتجات',
+                    'بەرهەمەکان',
                     style: TextStyle(
+                      fontFamily: 'Peshang',
                       fontSize: 24,
                       color: AppColors.kButtonsAndSecondaryBrownColor,
                       fontWeight: FontWeight.bold,
@@ -375,8 +350,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   Row(
                     children: [
                       Text(
-                        'عرض الكل',
+                        'هەموو بەرهەمەکان',
                         style: TextStyle(
+                          fontFamily: 'Peshang',
                           fontSize: 16,
                           color: AppColors.kButtonsAndSecondaryBrownColor,
                           fontWeight: FontWeight.w500,

@@ -1,33 +1,35 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, equal_keys_in_map, unused_import, depend_on_referenced_packages
 
+import 'package:bikrra_app/constants/shared_values.dart';
+import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_home.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedValues.init();
 
-  // await Firebase.initializeApp(
-  //     options: FirebaseOptions(
-  //   apiKey: 'AIzaSyC0B4aHp3hTXlF2_YQwnYReOtAS8d3vN6Q',
-  //   appId: '1:297124991947:android:56740aceacfa06a8cd5c4e',
-  //   messagingSenderId: '297124991947',
-  //   projectId: 'coffee-559a6',
-  // ));
-
-  runApp(MaterialApp(
-    theme: ThemeData(
-      fontFamily: 'Cairo',
-    ),
-    debugShowCheckedModeBanner: false,
-    supportedLocales: const [Locale('ar')],
-    localizationsDelegates: const [
-      GlobalMaterialLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    home: MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ProductCartProvider()),
+        ],
+        child: MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'Peshang',
+          ),
+          debugShowCheckedModeBanner: false,
+          supportedLocales: const [Locale('ar')],
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          home: MyApp(),
+        )),
+  );
 }
 
 class MyApp extends StatefulWidget {

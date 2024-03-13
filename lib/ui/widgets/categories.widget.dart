@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last, prefer_const_constructors_in_immutables, use_key_in_widget_constructors
 
-import 'package:bikrra_app/constants/app_colors.dart';
-
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatefulWidget {
@@ -22,17 +20,17 @@ class _CategoryWidgetState extends State<CategoryWidget> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: Colors.grey.shade300,
+                color: Colors.grey.shade100,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
                 child: Image.asset(
                   widget.image,
-                  height: 30,
-                  width: 30,
+                  height: 40,
+                  width: 40,
                 ),
               ),
             ),
@@ -43,6 +41,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
               '${widget.type} ',
               style: TextStyle(
                   fontSize: 16,
+                  fontFamily: 'Peshang',
                   color: Colors.black,
                   fontWeight: FontWeight.w500),
             ),

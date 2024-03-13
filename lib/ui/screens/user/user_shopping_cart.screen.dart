@@ -1,9 +1,11 @@
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_order_checkout.screen.dart';
 import 'package:bikrra_app/ui/widgets/cart.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class UserShoppingCartScreen extends StatefulWidget {
   const UserShoppingCartScreen({super.key});
@@ -13,22 +15,13 @@ class UserShoppingCartScreen extends StatefulWidget {
 }
 
 class _UserShoppingCartScreenState extends State<UserShoppingCartScreen> {
-  List<CartWidget> cartItems = [
-    const CartWidget(
-        image: 'assets/birthday_cake_image.jpg',
-        name: 'كيكة العيد',
-        description: 'description',
-        price: 32000,
-        isFavorite: false)
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
-          'سلة المنتجات',
+          'لیستی داواکاریەکان',
           style: TextStyle(
             fontSize: 24,
             color: AppColors.kButtonsAndSecondaryBrownColor,
@@ -52,10 +45,22 @@ class _UserShoppingCartScreenState extends State<UserShoppingCartScreen> {
         ),
       ),
       body: ListView.builder(
-        itemCount: cartItems.length,
-        itemBuilder: (context, index) => cartItems[index],
+        itemCount: context.watch<ProductCartProvider>().cartCount,
+        itemBuilder: (context, index) => CartWidget(
+          image: context.watch<ProductCartProvider>().productCart[index].image,
+          name: context.watch<ProductCartProvider>().productCart[index].name,
+          description: context
+              .watch<ProductCartProvider>()
+              .productCart[index]
+              .description,
+          price: context.watch<ProductCartProvider>().productCart[index].price,
+          isFavorite: context
+              .watch<ProductCartProvider>()
+              .productCart[index]
+              .isFavorite!,
+        ),
       ),
-      bottomSheet: cartItems.isNotEmpty
+      bottomSheet: context.watch<ProductCartProvider>().cartCount > 0
           ? BottomSheet(
               onClosing: () {},
               builder: (context) => Container(
@@ -69,7 +74,7 @@ class _UserShoppingCartScreenState extends State<UserShoppingCartScreen> {
                       padding: const EdgeInsets.all(16),
                       color: Colors.grey.withOpacity(0.2),
                       child: Text(
-                        'المجموع: ${calculateTotalPrice()} د.ع',
+                        'کۆی گشتی: ${context.watch<ProductCartProvider>().totalPrice} د.ع',
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -103,7 +108,7 @@ class _UserShoppingCartScreenState extends State<UserShoppingCartScreen> {
                               ),
                               SizedBox(width: 10),
                               Text(
-                                'تاكيد الطلبية',
+                                'دڵنیابوونەوە',
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
@@ -121,9 +126,5 @@ class _UserShoppingCartScreenState extends State<UserShoppingCartScreen> {
             )
           : null,
     );
-  }
-
-  double calculateTotalPrice() {
-    return cartItems.fold(0.0, (total, item) => total + item.price);
   }
 }

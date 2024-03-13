@@ -1,12 +1,13 @@
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
-import 'package:bikrra_app/ui/screens/user/user_single_product.screen.dart';
+import 'package:bikrra_app/ui/screens/user/user_mobilya/user_mobilya_detail.screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductWidget extends StatefulWidget {
   final String image;
   final String name;
   final String description;
+  final String type;
   final int price;
   final bool isFavorate;
   const ProductWidget({
@@ -14,6 +15,7 @@ class ProductWidget extends StatefulWidget {
     required this.image,
     required this.name,
     required this.description,
+    required this.type,
     required this.price,
     required this.isFavorate,
   });
@@ -29,12 +31,12 @@ class _CoffeeItemState extends State<ProductWidget> {
       onTap: () {
         pushScreen(
             context,
-            UserSingleProductScreen(
+            UserMobilyaDetailScreen(
               name: widget.name,
-              type: 'كيك',
+              type: widget.type,
               price: widget.price.toString(),
               description: widget.description,
-              image: AssetImage(widget.image),
+              image: widget.image,
             ));
       },
       child: Container(
@@ -89,14 +91,14 @@ class _CoffeeItemState extends State<ProductWidget> {
                     const SizedBox(
                       width: 6,
                     ),
-                    Text(
-                      '${priceWithComma(widget.price)} د.ع',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.mainPinkColor),
-                    )
+                    // Text(
+                    //   '${priceWithComma(widget.price)} د.ع',
+                    //   overflow: TextOverflow.ellipsis,
+                    //   style: const TextStyle(
+                    //       fontSize: 18,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: AppColors.mainPinkColor),
+                    // )
                   ],
                 ),
                 const SizedBox(

@@ -1,6 +1,9 @@
+import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartWidget extends StatefulWidget {
   final String image;
@@ -23,7 +26,6 @@ class CartWidget extends StatefulWidget {
 }
 
 class _CartWidgetState extends State<CartWidget> {
-  int quantity = 1;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -59,15 +61,22 @@ class _CartWidgetState extends State<CartWidget> {
                       color: Colors.red,
                       child: const Icon(Icons.remove),
                       onPressed: () {
-                        setState(() {
-                          quantity = quantity > 1 ? quantity - 1 : 1;
-                        });
+                        context
+                            .read<ProductCartProvider>()
+                            .removeProductFromCart(ProductC(
+                              image: widget.image,
+                              name: widget.name,
+                              description: widget.description,
+                              price: widget.price,
+                              isFavorite: widget.isFavorite,
+                              category: '',
+                            ));
                       },
                     ),
                   ),
                   SizedBox(width: 8), // Add some spacing
                   Text(
-                    '$quantity',
+                    '${context.watch<ProductCartProvider>().productCart.where((element) => element.name == widget.name).length}',
                     style: const TextStyle(fontSize: 14),
                   ),
                   SizedBox(width: 8), // Add some spacing
@@ -80,15 +89,22 @@ class _CartWidgetState extends State<CartWidget> {
                       child: Center(
                           child: const Icon(Icons.add, color: Colors.black)),
                       onPressed: () {
-                        setState(() {
-                          quantity += 1;
-                        });
+                        context
+                            .read<ProductCartProvider>()
+                            .addProductToCart(ProductC(
+                              image: widget.image,
+                              name: widget.name,
+                              description: widget.description,
+                              price: widget.price,
+                              isFavorite: widget.isFavorite,
+                              category: '',
+                            ));
                       },
                     ),
                   ),
                   const SizedBox(width: 8), // Add some spacing
                   Text(
-                    '${priceWithComma(widget.price * quantity)} د.ع',
+                    '${priceWithComma(widget.price * context.watch<ProductCartProvider>().productCart.where((element) => element.name == widget.name).length)} د.ع',
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.darkGreenColor,
