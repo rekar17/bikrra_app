@@ -1,5 +1,7 @@
 import 'package:bikrra_app/classes/home_screen.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
+import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/ui/screens/user/user_gift_list.screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenWidget extends StatelessWidget {
@@ -39,7 +41,9 @@ class HomeScreenWidget extends StatelessWidget {
                     color: Colors.white,
                   ),
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      pushScreen(context, UserGiftListScreen());
+                    },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                       side: const BorderSide(
@@ -49,7 +53,7 @@ class HomeScreenWidget extends StatelessWidget {
                     child: Center(
                       child: Text(
                         homeScreenC.text,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Peshang',
                           fontSize: 20,
                           color: AppColors.kButtonsAndSecondaryBrownColor,
@@ -80,7 +84,7 @@ class HomeScreenWidget extends StatelessWidget {
                 'assets/wedding-ring.png',
                 height: 60,
                 width: 60,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
           ),
