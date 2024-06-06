@@ -8,12 +8,12 @@ class UserGiftListScreen extends StatelessWidget {
   final List<GiftItem> giftList = [
     GiftItem(
         name: 'Cappuccino & Brownie',
-        imageAssetPath: 'assets/bikrra_logo.jpeg',
+        imagePath: 'assets/bikrra_logo.jpeg',
         price: 8.99,
         category: 'Coffee'),
     GiftItem(
         name: 'Red Velvet Cake Slice',
-        imageAssetPath: 'assets/bikrra_logo.jpeg',
+        imagePath: 'assets/bikrra_logo.jpeg',
         price: 5.50,
         category: 'Cake'),
     // ...more gift items

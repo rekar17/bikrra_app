@@ -20,7 +20,7 @@ class GiftWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Image.asset(gift.imageAssetPath, width: 80, height: 80),
+          Image.asset(gift.imagePath, width: 80, height: 80),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
