@@ -94,7 +94,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    context.watch<ProductCartProvider>().cartCount.toString(),
+                    context
+                        .watch<ProductCartProvider>()
+                        .productCount
+                        .toString(),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white,

@@ -1,23 +1,14 @@
+import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
 import 'package:bikrra_app/ui/screens/user/user_mobilya/user_mobilya_detail.screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductWidget extends StatefulWidget {
-  final String image;
-  final String name;
-  final String description;
-  final String type;
-  final int price;
-  final bool isFavorate;
+  final ProductC product;
   const ProductWidget({
     super.key,
-    required this.image,
-    required this.name,
-    required this.description,
-    required this.type,
-    required this.price,
-    required this.isFavorate,
+    required this.product,
   });
 
   @override
@@ -32,11 +23,7 @@ class _CoffeeItemState extends State<ProductWidget> {
         pushScreen(
             context,
             UserMobilyaDetailScreen(
-              name: widget.name,
-              type: widget.type,
-              price: widget.price.toString(),
-              description: widget.description,
-              image: widget.image,
+              product: widget.product,
             ));
       },
       child: Container(
@@ -68,7 +55,7 @@ class _CoffeeItemState extends State<ProductWidget> {
                     child: AspectRatio(
                       aspectRatio: 5,
                       child: Image.asset(
-                        widget.image,
+                        widget.product.image,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -81,7 +68,7 @@ class _CoffeeItemState extends State<ProductWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.name,
+                      widget.product.name,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           color: Colors.black,
@@ -105,7 +92,7 @@ class _CoffeeItemState extends State<ProductWidget> {
                   height: 10,
                 ),
                 Text(
-                  widget.description,
+                  widget.product.description,
                   overflow: TextOverflow.ellipsis,
                 ),
               ]),

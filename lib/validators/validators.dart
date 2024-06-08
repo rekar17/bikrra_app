@@ -1,30 +1,30 @@
 class Validators {
   static String? phone(String? value) {
     if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال رقم الهاتف';
+      return 'تکایە ژمارەی مۆبایل بنووسە';
     }
     if (value.length != 11) {
-      return 'رقم الهاتف يجب أن يتكون 11 أرقام';
+      return 'ژمارەی مۆبایل پێویستە لە ١١ پیت بێت';
     }
     return null;
   }
 
   static String? password(String? value) {
     if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال كلمة السر';
+      return 'تکایە ژمارەی نهێنی بنووسە';
     }
     if (value.length < 6) {
-      return 'كلمة السر يجب أن تتكون من 6 أحرف على الأقل';
+      return 'ژمارەی نهێنی پێویستە لە ٦ پیت بێت';
     }
     return null;
   }
 
   static String? confirmPassword(String? value, String? password) {
     if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال كلمة السر';
+      return 'تکایە ژمارەی نهێنی بنووسە';
     }
     if (value != password) {
-      return 'كلمة السر غير متطابقة';
+      return 'ژمارەی نهێنی ناگونجاوە';
     }
     return null;
   }
@@ -53,12 +53,12 @@ class Validators {
   static String? number(String? value, {bool isRequired = true}) {
     if (value == null || value.isEmpty) {
       if (isRequired) {
-        return 'الرجاء إدخال البيانات';
+        return 'تکایە ژمارە بنووسە';
       }
       return null;
     }
     if (int.tryParse(value) == null) {
-      return 'الرجاء إدخال رقم';
+      return 'تکایە ژمارە بنووسە';
     }
     return null;
   }
@@ -71,7 +71,7 @@ class Validators {
   }) {
     if (value == null || value.isEmpty) {
       if (isRequired) {
-        return 'الرجاء إدخال البيانات';
+        return 'تکایە تێبینیەکان بنووسە';
       }
       return null;
     }

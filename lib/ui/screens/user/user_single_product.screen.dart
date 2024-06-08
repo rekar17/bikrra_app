@@ -1,22 +1,17 @@
+import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/providers/product_favorite.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class UserSingleProductScreen extends StatefulWidget {
-  final String name;
-  final String type;
-  final String price;
-  final String description;
-  final AssetImage image;
+  final ProductC product;
 
   const UserSingleProductScreen({
     Key? key,
-    required this.name,
-    required this.type,
-    required this.price,
-    required this.description,
-    required this.image,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -30,12 +25,14 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
 
   @override
   void initState() {
-    totalPrice = int.parse(widget.price);
+    totalPrice = widget.product.price;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isFavorite = Provider.of<ProductFavoriteProvider>(context)
+        .isFavorite(widget.product);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -51,7 +48,7 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.mainPinkColor.withOpacity(0.7),
                       image: DecorationImage(
-                        image: widget.image,
+                        image: AssetImage(widget.product.image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -86,9 +83,32 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                                   CircleAvatar(
                                     backgroundColor: Colors.white,
                                     child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        FontAwesomeIcons.heart,
+                                      onPressed: () {
+                                        if (isFavorite) {
+                                          Provider.of<ProductFavoriteProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .removeProduct(widget.product);
+                                        } else {
+                                          Provider.of<ProductFavoriteProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .addProduct(widget.product);
+
+                                          ScaffoldMessenger.of(
+                                                  context) // Add this line
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  'تم اضافة المنتج الى المفضلة'),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      icon: Icon(
+                                        isFavorite
+                                            ? FontAwesomeIcons.solidHeart
+                                            : FontAwesomeIcons.heart,
                                         color: AppColors.mainPinkColor,
                                       ),
                                     ),
@@ -116,10 +136,10 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                               onPressed: () {
                                 setState(() {
                                   count--;
-                                  totalPrice = count * int.parse(widget.price);
+                                  totalPrice = count * widget.product.price;
                                   if (count < 1) {
                                     count = 1;
-                                    totalPrice = int.parse(widget.price);
+                                    totalPrice = widget.product.price;
                                   }
                                 });
                               },
@@ -145,7 +165,7 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                               onPressed: () {
                                 setState(() {
                                   count++;
-                                  totalPrice = count * int.parse(widget.price);
+                                  totalPrice = count * widget.product.price;
                                 });
                               },
                               splashColor: AppColors.cakePinkColor,
@@ -175,7 +195,7 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.name,
+                        widget.product.name,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 22,
@@ -184,7 +204,7 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                         ),
                       ),
                       Text(
-                        '${priceWithComma(widget.price)} دينار',
+                        '${priceWithComma(widget.product.price)} دينار',
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 20,
@@ -196,7 +216,7 @@ class _UserSingleProductScreenState extends State<UserSingleProductScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.description,
+                    widget.product.description,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black54,

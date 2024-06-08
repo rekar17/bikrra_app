@@ -4,19 +4,17 @@ import 'package:bikrra_app/ui/widgets/gift.widget.dart';
 import 'package:flutter/material.dart';
 
 class UserGiftListScreen extends StatelessWidget {
-  // Sample gift data - replace with actual data fetching logic
   final List<GiftItem> giftList = [
     GiftItem(
-        name: 'Cappuccino & Brownie',
+        name: 'كرسي مودرن',
         imagePath: 'assets/bikrra_logo.jpeg',
         price: 8.99,
-        category: 'Coffee'),
+        category: 'Mobilya'),
     GiftItem(
-        name: 'Red Velvet Cake Slice',
+        name: 'Air conditioner',
         imagePath: 'assets/bikrra_logo.jpeg',
         price: 5.50,
-        category: 'Cake'),
-    // ...more gift items
+        category: 'Elektronik'),
   ];
 
   UserGiftListScreen({super.key});
@@ -26,7 +24,7 @@ class UserGiftListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.cakeLightBrwonColor,
       appBar: AppBar(
-        title: Text('لیستی دیاریەکان',
+        title: const Text('لیستی دیاریەکان',
             style: TextStyle(color: AppColors.textColor)),
         backgroundColor: Colors.white,
       ),

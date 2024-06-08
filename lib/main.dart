@@ -2,6 +2,7 @@
 
 import 'package:bikrra_app/constants/shared_values.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
+import 'package:bikrra_app/providers/product_favorite.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_home.screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,6 +15,7 @@ void main() async {
   runApp(
     MultiProvider(
         providers: [
+          ChangeNotifierProvider(create: (_) => ProductFavoriteProvider()),
           ChangeNotifierProvider(create: (_) => ProductCartProvider()),
         ],
         child: MaterialApp(

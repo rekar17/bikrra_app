@@ -53,6 +53,7 @@ dependencies:
   webview_flutter: ^4.8.0
   url_launcher: ^6.3.0
   uni_links2: ^0.6.0+2
+  cached_network_image: ^3.3.1
   
   
 

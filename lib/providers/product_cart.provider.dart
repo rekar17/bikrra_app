@@ -1,61 +1,107 @@
 import 'package:bikrra_app/classes/product.class.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:bikrra_app/constants/shared_values.dart';
+import 'package:flutter/foundation.dart';
 
 class ProductCartProvider with ChangeNotifier {
-  List<ProductC> _productCart = [];
+  List<ProductC> _products = [];
 
-  List<ProductC> get productCart => _productCart;
+  List<ProductC> get products => _products;
 
-  void addProductToCart(ProductC product) {
-    if (_productCart.contains(product)) {
-      _productCart[_productCart.indexOf(product)].quantity =
-          _productCart[_productCart.indexOf(product)].quantity! + 1;
-    } else {
-      _productCart.add(product);
-    }
-    SharedValues.sharedPreferences!.setStringList(
-        'productCart', _productCart.map((e) => e.toJson()).toList());
-    notifyListeners();
+  ProductCartProvider() {
+    _loadProducts();
   }
 
-  void removeProductFromCart(ProductC product) {
-    if (_productCart.contains(product)) {
-      if (_productCart[_productCart.indexOf(product)].quantity! > 1) {
-        _productCart[_productCart.indexOf(product)].quantity =
-            _productCart[_productCart.indexOf(product)].quantity! - 1;
-      } else {
-        _productCart.remove(product);
+  void _loadProducts() {
+    try {
+      final products =
+          SharedValues.sharedPreferences!.getStringList('products');
+      if (products != null) {
+        _products = products.map((e) => ProductC.fromJson(e)).toList();
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error loading products: $e');
       }
     }
-    SharedValues.sharedPreferences!.setStringList(
-        'productCart', _productCart.map((e) => e.toJson()).toList());
+  }
+
+  void addProduct(ProductC product) {
+    final index = _products.indexWhere((p) => p.id == product.id);
+    if (index != -1) {
+      // Increment quantity by 1 instead of product.quantity
+      _products[index].quantity++;
+    } else {
+      // Set quantity to 1 when adding a new product
+      product.quantity = 1;
+      _products.add(product);
+    }
+    _saveProducts();
     notifyListeners();
   }
 
-  void clearCart() {
-    _productCart.clear();
-    SharedValues.sharedPreferences!.setStringList(
-        'productCart', _productCart.map((e) => e.toJson()).toList());
-    notifyListeners();
-  }
-
-  void loadCart() {
-    List<String>? productCart =
-        SharedValues.sharedPreferences!.getStringList('productCart');
-    if (productCart != null) {
-      _productCart = productCart.map((e) => ProductC.fromJson(e)).toList();
+  void decreaseProduct(ProductC product) {
+    if (_products.contains(product)) {
+      product.quantity--;
+      if (product.quantity <= 0) {
+        _products.remove(product);
+      }
+      _saveProducts();
     }
     notifyListeners();
   }
 
-  int get cartCount => _productCart.length;
-
-  int get totalPrice => _productCart.fold(
-      0, (previousValue, element) => previousValue + element.price);
-
-  bool isProductInCart(ProductC product) {
-    return _productCart.contains(product);
+  void removeProduct(ProductC product) {
+    _products.remove(product);
+    _saveProducts();
+    notifyListeners();
   }
+
+  void clearProducts() {
+    _products.clear();
+    SharedValues.sharedPreferences!.remove('products');
+    notifyListeners();
+  }
+
+  void _saveProducts() async {
+    try {
+      await SharedValues.sharedPreferences!
+          .setStringList('products', _products.map((e) => e.toJson()).toList());
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error saving products: $e');
+      }
+    }
+    notifyListeners();
+  }
+
+  double get total {
+    double total = 0;
+    for (var product in _products) {
+      total += product.price;
+    }
+    return total;
+  }
+
+  //total all price
+  double get totalAll {
+    double total = 0;
+    for (var product in _products) {
+      total += product.price * product.quantity;
+    }
+    return total;
+  }
+
+  bool get isEmpty => _products.isEmpty;
+
+  bool contains(ProductC product) {
+    return _products.contains(product);
+  }
+
+  int productQuantity(ProductC product) {
+    return products
+        .where((p) => p.id == product.id)
+        .fold(0, (prev, p) => prev + p.quantity);
+  }
+
+  int get productCount => _products.length;
 }

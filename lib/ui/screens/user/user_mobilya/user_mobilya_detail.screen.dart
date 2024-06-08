@@ -1,25 +1,19 @@
 import 'package:bikrra_app/classes/product.class.dart';
+import 'package:bikrra_app/classes/product_category.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/constants/methods.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class UserMobilyaDetailScreen extends StatefulWidget {
-  final String name;
-  final String type;
-  final String price;
-  final String description;
-  final String image;
+  final ProductC product;
 
   const UserMobilyaDetailScreen({
     Key? key,
-    required this.name,
-    required this.type,
-    required this.price,
-    required this.description,
-    required this.image,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -33,7 +27,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
 
   @override
   void initState() {
-    totalPrice = int.parse(widget.price);
+    totalPrice = widget.product.price;
     super.initState();
   }
 
@@ -54,7 +48,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.mainPinkColor.withOpacity(0.7),
                       image: DecorationImage(
-                        image: AssetImage(widget.image),
+                        image: AssetImage(widget.product.image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -119,10 +113,10 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                               onPressed: () {
                                 setState(() {
                                   count--;
-                                  totalPrice = count * int.parse(widget.price);
+                                  totalPrice = count * widget.product.price;
                                   if (count < 1) {
                                     count = 1;
-                                    totalPrice = int.parse(widget.price);
+                                    totalPrice = widget.product.price;
                                   }
                                 });
                               },
@@ -148,7 +142,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                               onPressed: () {
                                 setState(() {
                                   count++;
-                                  totalPrice = count * int.parse(widget.price);
+                                  totalPrice = count * widget.product.price;
                                 });
                               },
                               splashColor: AppColors.cakePinkColor,
@@ -178,7 +172,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.name,
+                        widget.product.name,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 22,
@@ -187,7 +181,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                         ),
                       ),
                       Text(
-                        '${priceWithComma(widget.price)} دينار',
+                        '${priceWithComma(widget.product.price)} دينار',
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 20,
@@ -199,7 +193,7 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    widget.description,
+                    widget.product.description,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.black54,
@@ -226,13 +220,24 @@ class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
                         color: AppColors.mainPinkColor),
                     child: MaterialButton(
                       onPressed: () {
-                        context.read<ProductCartProvider>().addProductToCart(
-                            ProductC(
-                                name: widget.name,
-                                category: widget.type,
-                                price: int.parse(widget.price),
-                                description: widget.description,
-                                image: widget.image));
+                        context.read<ProductCartProvider>().addProduct(
+                              ProductC(
+                                id: widget.product.id,
+                                name: widget.product.name,
+                                description: widget.product.description,
+                                price: widget.product.price,
+                                image: widget.product.image,
+                                category: ProductCategoryC(
+                                  id: widget.product.category.id,
+                                  name: widget.product.category.name,
+                                  description:
+                                      widget.product.category.description,
+                                  image: widget.product.category.image,
+                                  status: widget.product.category.status,
+                                ),
+                                quantity: count,
+                              ),
+                            );
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('زیاد کرا بۆ لیست'),

@@ -1,20 +1,20 @@
 class ProductCategoryC {
   int id;
   String name;
-  String description;
-  String image;
-  int status;
-  String createdAt;
-  String updatedAt;
+  String? description;
+  String? image;
+  int? status;
+  String? createdAt;
+  String? updatedAt;
 
   ProductCategoryC(
       {required this.id,
       required this.name,
-      required this.description,
-      required this.image,
-      required this.status,
-      required this.createdAt,
-      required this.updatedAt});
+      this.description,
+      this.image,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
   factory ProductCategoryC.fromJson(Map<String, dynamic> json) {
     return ProductCategoryC(

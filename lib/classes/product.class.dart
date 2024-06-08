@@ -1,15 +1,19 @@
 import 'dart:convert';
 
+import 'package:bikrra_app/classes/product_category.class.dart';
+
 class ProductC {
+  int? id;
   final String image;
   final String name;
   final String description;
-  final String category;
+  final ProductCategoryC category;
   final int price;
   bool? isFavorite;
-  int? quantity;
+  int quantity = 1;
 
   ProductC({
+    this.id,
     required this.image,
     required this.name,
     required this.description,
@@ -22,10 +26,11 @@ class ProductC {
   //fromMap
   factory ProductC.fromMap(Map<String, dynamic> map) {
     return ProductC(
+      id: map['id'],
       image: map['image'],
       name: map['name'],
       description: map['description'],
-      category: map['category'],
+      category: ProductCategoryC.fromJson(map['category']),
       price: map['price'],
       isFavorite: map['isFavorite'],
       quantity: map['quantity'],
@@ -38,7 +43,7 @@ class ProductC {
       'image': image,
       'name': name,
       'description': description,
-      'category': category,
+      'category': category.toJson(),
       'price': price,
       'isFavorite': isFavorite,
       'quantity': quantity,

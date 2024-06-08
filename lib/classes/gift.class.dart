@@ -1,8 +1,8 @@
 class GiftItem {
   final String name;
-  final String imagePath; // Path to the gift's image
+  final String imagePath;
   final double price;
-  final String category; // 'Coffee', 'Cake', etc.
+  final String category;
 
   GiftItem(
       {required this.name,
