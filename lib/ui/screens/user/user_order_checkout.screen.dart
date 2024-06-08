@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import 'dart:io';
 
 import 'package:bikrra_app/classes/product.class.dart';
@@ -213,12 +215,12 @@ class _UserOrderCheckoutScreenState extends State<UserOrderCheckoutScreen> {
                         );
                         Navigator.pop(context);
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                                Text('هەڵەیەک ڕوویدا، تکایە دوبارە هەوڵ بدەوە'),
-                          ),
-                        );
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   const SnackBar(
+                        //     content:
+                        //         Text('هەڵەیەک ڕوویدا، تکایە دوبارە هەوڵ بدەوە'),
+                        //   ),
+                        // );
                       }
                     },
               style: ElevatedButton.styleFrom(
