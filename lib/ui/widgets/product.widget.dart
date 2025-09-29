@@ -1,6 +1,6 @@
 import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/ui/screens/user/user_mobilya/user_mobilya_detail.screen.dart';
 import 'package:flutter/material.dart';
 

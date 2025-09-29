@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future comfirmDialogWidget(BuildContext context) {
+Future<bool?> comfirmDialogWidget(BuildContext context) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -9,14 +9,13 @@ Future comfirmDialogWidget(BuildContext context) {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop(false);
           },
           child: const Text('الغاء'),
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
-
+            Navigator.of(context).pop(true);
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -26,8 +25,7 @@ Future comfirmDialogWidget(BuildContext context) {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.of(context).pop();
                     },
                     child: const Text('حسناً'),
                   ),

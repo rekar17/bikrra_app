@@ -1,10 +1,13 @@
 // ignore_for_file: dead_code
 
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:bikrra_app/classes/gift.class.dart';
 import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
+import 'package:bikrra_app/ui/screens/user/wedding_card_information.screen.dart';
 import 'package:bikrra_app/ui/widgets/comfirm_dialog.widget.dart';
 import 'package:bikrra_app/validators/validators.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -159,6 +162,31 @@ class _UserOrderCheckoutScreenState extends State<UserOrderCheckoutScreen> {
 
                       if (!sure! || !context.mounted) return;
 
+                      var products = Provider.of<ProductCartProvider>(context,
+                              listen: false)
+                          .products;
+
+                      products
+                          .map((product) => GiftItem(
+                                  name: product.name,
+                                  imagePath: product.image,
+                                  price: double.parse(product.price.toString()),
+                                  category: product.category
+                                      .name) // Assuming your ProductC has name, image, price, and category properties
+                              )
+                          .toList();
+
+                      final giftListJson = jsonEncode(products);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WeddingCardInformationScreen(
+                            giftList: giftListJson,
+                          ),
+                        ),
+                      );
+
                       setState(() {
                         isLoading = true;
                       });
@@ -200,7 +228,6 @@ class _UserOrderCheckoutScreenState extends State<UserOrderCheckoutScreen> {
 
                                   if (!context.mounted) return;
                                   Navigator.of(context).pop(true);
-                                  Navigator.of(context).pop(true);
                                 },
                                 child: const Text('باشە'),
                               ),
@@ -213,7 +240,6 @@ class _UserOrderCheckoutScreenState extends State<UserOrderCheckoutScreen> {
                             content: Text('داواکاری بە سەرکەوتویی داواکرا'),
                           ),
                         );
-                        Navigator.pop(context);
                       } else {
                         // ScaffoldMessenger.of(context).showSnackBar(
                         //   const SnackBar(

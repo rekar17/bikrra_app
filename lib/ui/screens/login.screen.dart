@@ -1,167 +1,233 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, unused_field, use_build_context_synchronously, avoid_print, unnecessary_null_comparison
-
 import 'package:bikrra_app/constants/app_colors.dart';
 import 'package:bikrra_app/ui/screens/register.screen.dart';
-import 'package:bikrra_app/ui/widgets/cake_text_input.widget.dart';
-
+import 'package:bikrra_app/utils/methods.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool showLoading = false;
-  TextEditingController _ctrlUsername = TextEditingController();
-  TextEditingController _ctrlPassword = TextEditingController();
+  final key = GlobalKey<FormState>();
+  final usernameKey = GlobalKey<FormFieldState<String>>();
+  final passwordKey = GlobalKey<FormFieldState<String>>();
 
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/cakeBackground.jpg'),
-                fit: BoxFit.cover),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('تسجيل الدخول'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: key,
+          child: SingleChildScrollView(
             child: Column(
-              children: [
-                Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage('assets/asumaLogo.jpg'),
-                      )),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                AspectRatio(
+                    aspectRatio: 1 / 0.5,
+                    child: Image.asset('assets/bikrra_logo.jpeg')),
+                const SizedBox(
+                  height: 24,
                 ),
-                SizedBox(
-                  height: 60,
-                ),
-                //opcity container to show login text
-                Opacity(
-                  opacity: 0.8,
-                  child: Container(
-                    height: 50,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.cakePinkColor),
-                    child: Center(
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.kButtonsAndSecondaryBrownColor,
-                            fontSize: 30),
+                TextFormField(
+                  key: usernameKey,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'الرجاء إدخال اسم المستخدم';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'اسم المستخدم',
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Cairo',
+                      color: AppColors.mainPinkColor.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    prefixIcon: const Icon(
+                      FontAwesomeIcons.user,
+                      color: AppColors.mainPinkColor,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
                       ),
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 60,
+                const SizedBox(
+                  height: 24,
                 ),
-                CakeTextField(controller: _ctrlUsername, hintText: 'Username'),
-                SizedBox(
-                  height: 10,
-                ),
-                CakeTextField(controller: _ctrlPassword, hintText: 'Password'),
-                SizedBox(
-                  height: 60,
-                ),
-                MaterialButton(
-                  splashColor: AppColors.cakePinkColor,
-                  height: 50,
-                  minWidth: 110,
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        showLoading = true;
-                      });
-
-                      setState(() {
-                        showLoading = false;
-                      });
-                    } catch (e) {
-                      print(e);
+                TextFormField(
+                  key: passwordKey,
+                  validator: (value) {
+                    if (value!.isNotEmpty) {
+                      if (value.length < 6) {
+                        return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                      }
                     }
+                    if (value.isEmpty) {
+                      return 'الرجاء إدخال كلمة المرور';
+                    }
+                    return null;
                   },
-                  color: AppColors.cakePinkColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.kButtonsAndSecondaryBrownColor,
-                        fontSize: 20),
+                  decoration: InputDecoration(
+                    hintText: 'كلمة المرور',
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Cairo',
+                      color: AppColors.mainPinkColor.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    prefixIcon: const Icon(
+                      FontAwesomeIcons.lock,
+                      color: AppColors.mainPinkColor,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: const BorderSide(
+                        color: AppColors.mainPinkColor,
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
+                const SizedBox(
+                  height: 24,
                 ),
-                MaterialButton(
-                  height: 50,
-                  minWidth: 110,
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.mainPinkColor,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: isLoading == true
+                      ? () {}
+                      : () async {
+                          try {
+                            if (!key.currentState!.validate()) return;
+
+                            setState(() {
+                              isLoading = true;
+                            });
+                            // var loggedIn = await context
+                            //     .read<LoginProvider>()
+                            //     .localAuthentication(
+                            //       usernameKey.currentState!.value!,
+                            //       passwordKey.currentState!.value!,
+                            //     );
+                            // if (!context.mounted) return;
+                            // loggedIn ??=
+                            //     await context.read<LoginProvider>().login(
+                            //           usernameKey.currentState!.value!,
+                            //           passwordKey.currentState!.value!,
+                            //           fcmToken!,
+                            //         );
+                            // if (!context.mounted) return;
+
+                            // if (loggedIn == null) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     const SnackBar(
+                            //       content:
+                            //           Text('اسم المستخدم أو كلمة المرور خاطئة'),
+                            //       backgroundColor: Colors.red,
+                            //     ),
+                            //   );
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+                            //   return;
+                            // } else {
+                            //   setState(() {
+                            //     isLoading = false;
+                            //   });
+                            //   if (!context.mounted) return;
+                            //   pushScreen(context,
+                            //       AdminHomeScreen(userId: loggedIn.id));
+                            // }
+
+                            setState(() {
+                              isLoading = false;
+                            });
+                          } catch (e) {
+                            if (kDebugMode) {
+                              print(e);
+                            }
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                          'تسجيل الدخول',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.meduimPinkColor,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RegisterScreen()));
+                    pushScreen(context, const RegisterScreen());
                   },
-                  color: AppColors.cakePinkColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: AppColors.darkGreenColor, width: 2),
-                  ),
-                  child: Text(
-                    ' Create new account',
+                  child: const Text(
+                    'إنشاء حساب',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.kButtonsAndSecondaryBrownColor,
-                        fontSize: 20),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                MaterialButton(
-                  splashColor: Colors.brown.shade300,
-                  height: 50,
-                  minWidth: 110,
-                  onPressed: () async {
-                    try {
-                      setState(() {
-                        showLoading = true;
-                      });
-                      showLoading == true;
-
-                      setState(() {
-                        showLoading = false;
-                      });
-                    } catch (e) {
-                      print(e);
-                    }
-                  },
-                  color: AppColors.cakePinkColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: AppColors.darkGreenColor, width: 2),
-                  ),
-                  child: Text(
-                    'Continue Anonymous',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.kButtonsAndSecondaryBrownColor,
-                        fontSize: 20),
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ],
@@ -172,3 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+// Future<void> subscribeToTopic(String topic) async {
+//   await FirebaseMessaging.instance.subscribeToTopic(topic);
+// }

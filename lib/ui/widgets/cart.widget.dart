@@ -1,6 +1,6 @@
 import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_single_product.screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';

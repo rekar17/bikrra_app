@@ -14,8 +14,8 @@ class ProductCartProvider with ChangeNotifier {
   void _loadProducts() {
     try {
       final products =
-          SharedValues.sharedPreferences!.getStringList('products');
-      if (products != null) {
+          SharedValues.sharedPreferences!.getStringList('products') ?? [];
+      if (products.isNotEmpty) {
         _products = products.map((e) => ProductC.fromJson(e)).toList();
       }
     } catch (e) {

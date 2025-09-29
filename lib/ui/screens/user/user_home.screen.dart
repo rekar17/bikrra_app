@@ -3,7 +3,12 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:bikrra_app/classes/home_screen.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/ui/screens/login.screen.dart';
+import 'package:bikrra_app/ui/screens/user/services/user_beautiy_center_list.screen.dart';
+import 'package:bikrra_app/ui/screens/user/services/user_fasion_designer_list.screen.dart';
+import 'package:bikrra_app/ui/screens/user/services/user_party_hall_list.screen.dart';
+import 'package:bikrra_app/ui/screens/user/services/user_photographer_list.screen.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_order_list.screen.dart';
 import 'package:bikrra_app/ui/screens/user/user_product_favorite.screen.dart';
@@ -13,7 +18,6 @@ import 'package:bikrra_app/ui/screens/user/user_shopping_cart.screen.dart';
 import 'package:bikrra_app/ui/widgets/categories.widget.dart';
 import 'package:bikrra_app/ui/widgets/home_screen.widget.dart';
 import 'package:bottom_bar/bottom_bar.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +35,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   int activeIndex = 3;
   int carouselIndex = 0;
+  final PageController _pageController = PageController(viewportFraction: 0.9);
+
   @override
   void initState() {
     // data = firestore
@@ -134,14 +140,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             items: [
               BottomBarItem(
                 activeColor: Colors.white,
-                icon: CircleAvatar(
-                  backgroundColor:
-                      activeIndex == 0 ? Colors.white : Colors.transparent,
-                  child: Icon(
-                    FontAwesomeIcons.userLarge,
-                    color: activeIndex == 0
-                        ? AppColors.mainPinkColor
-                        : Colors.white,
+                icon: GestureDetector(
+                  onTap: () {
+                    pushScreen(context, LoginScreen());
+                  },
+                  child: CircleAvatar(
+                    backgroundColor:
+                        activeIndex == 0 ? Colors.white : Colors.transparent,
+                    child: Icon(
+                      FontAwesomeIcons.userLarge,
+                      color: activeIndex == 0
+                          ? AppColors.mainPinkColor
+                          : Colors.white,
+                    ),
                   ),
                 ),
                 title: null,
@@ -245,34 +256,45 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             SizedBox(
               height: 10,
             ),
-            CarouselSlider(
-                options: CarouselOptions(
-                  clipBehavior: Clip.none,
-                  height: 180,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 5),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.easeInOut,
-                  pauseAutoPlayOnTouch: true,
-                  aspectRatio: 1.0,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      carouselIndex = index;
-                    });
-                  },
-                ),
-                items: [
-                  HomeScreenWidget(
-                      homeScreenC: HomeScreenC(
-                    image: 'assets/wedding_image.png',
-                    text: 'هۆڵی گونجاو هەڵبژێرە',
-                  )),
-                  HomeScreenWidget(
-                      homeScreenC: HomeScreenC(
-                    image: 'assets/wedding_card.jpg',
-                    text: 'کارتی بانگەشە داوا بکە',
-                  )),
-                ]),
+            SizedBox(
+              height: 180,
+              child: PageView.builder(
+                controller: _pageController,
+                clipBehavior: Clip.none,
+                itemCount: 2,
+                itemBuilder: (context, index) {
+                  return AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.mainPinkColor.withOpacity(0.2),
+                          blurRadius: 10,
+                          spreadRadius: 3,
+                          offset: Offset(0, 3),
+                        )
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: HomeScreenWidget(
+                        homeScreenC: index == 0
+                            ? HomeScreenC(
+                                image: 'assets/wedding_image.png',
+                                text: 'هۆڵی گونجاو هەڵبژێرە',
+                              )
+                            : HomeScreenC(
+                                image: 'assets/wedding_card.jpg',
+                                text: 'کارتی بانگەشە داوا بکە',
+                              ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
@@ -301,6 +323,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   CategoryWidget(
                     type: 'مۆبیلیا',
                     image: 'assets/category_icons/armchair.png',
+                    onTap: () {
+                      // Add your onTap functionality here
+                    },
                   ),
                   SizedBox(
                     width: 5,
@@ -308,6 +333,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   CategoryWidget(
                     type: 'فاشیۆن دیزاینەر',
                     image: 'assets/category_icons/gown.png',
+                    onTap: () {
+                      pushScreen(context, UserFasionDesignerListScreen());
+                    },
                   ),
                   SizedBox(
                     width: 5,
@@ -315,6 +343,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   CategoryWidget(
                     type: 'هۆڵی ئاهەنگ',
                     image: 'assets/category_icons/hall.png',
+                    onTap: () {
+                      pushScreen(context, UserPartyHallListScreen());
+                    },
                   ),
                   SizedBox(
                     width: 5,
@@ -322,6 +353,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   CategoryWidget(
                     type: 'ئارایشگا',
                     image: 'assets/category_icons/makeup.png',
+                    onTap: () {
+                      pushScreen(context, UserBeautyCenterListScreen());
+                    },
                   ),
                   SizedBox(
                     width: 5,
@@ -329,6 +363,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   CategoryWidget(
                     type: 'فۆتۆگرافەر',
                     image: 'assets/category_icons/photographer.png',
+                    onTap: () {
+                      pushScreen(context, UserPhotographerListScreen());
+                    },
                   ),
                 ],
               ),

@@ -4,20 +4,22 @@ import 'package:bikrra_app/ui/widgets/gift.widget.dart';
 import 'package:flutter/material.dart';
 
 class UserGiftListScreen extends StatelessWidget {
-  final List<GiftItem> giftList = [
-    GiftItem(
-        name: 'كرسي مودرن',
-        imagePath: 'assets/bikrra_logo.jpeg',
-        price: 8.99,
-        category: 'Mobilya'),
-    GiftItem(
-        name: 'Air conditioner',
-        imagePath: 'assets/bikrra_logo.jpeg',
-        price: 5.50,
-        category: 'Elektronik'),
-  ];
+  //  final List<GiftItem> giftList = [
+  //   GiftItem(
+  //       name: 'كرسي مودرن',
+  //       imagePath: 'assets/bikrra_logo.jpeg',
+  //       price: 8.99,
+  //       category: 'Mobilya'),
+  //   GiftItem(
+  //       name: 'Air conditioner',
+  //       imagePath: 'assets/bikrra_logo.jpeg',
+  //       price: 5.50,
+  //       category: 'Elektronik'),
+  // ];
 
-  UserGiftListScreen({super.key});
+  final List<GiftItem> giftList;
+
+  UserGiftListScreen({super.key, required this.giftList});
 
   @override
   Widget build(BuildContext context) {

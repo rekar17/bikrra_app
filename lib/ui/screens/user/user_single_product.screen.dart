@@ -1,6 +1,6 @@
 import 'package:bikrra_app/classes/product.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/providers/product_favorite.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

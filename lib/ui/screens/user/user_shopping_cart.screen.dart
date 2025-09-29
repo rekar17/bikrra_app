@@ -1,5 +1,5 @@
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/constants/methods.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
 import 'package:bikrra_app/ui/screens/user/user_order_checkout.screen.dart';
 import 'package:bikrra_app/ui/widgets/cart.widget.dart';
