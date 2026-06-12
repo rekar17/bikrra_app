@@ -27,12 +27,11 @@ class ProductCartProvider with ChangeNotifier {
 
   void addProduct(ProductC product) {
     final index = _products.indexWhere((p) => p.id == product.id);
+    final quantityToAdd = product.quantity < 1 ? 1 : product.quantity;
     if (index != -1) {
-      // Increment quantity by 1 instead of product.quantity
-      _products[index].quantity++;
+      _products[index].quantity += quantityToAdd;
     } else {
-      // Set quantity to 1 when adding a new product
-      product.quantity = 1;
+      product.quantity = quantityToAdd;
       _products.add(product);
     }
     _saveProducts();
@@ -64,8 +63,10 @@ class ProductCartProvider with ChangeNotifier {
 
   void _saveProducts() async {
     try {
-      await SharedValues.sharedPreferences!
-          .setStringList('products', _products.map((e) => e.toJson()).toList());
+      await SharedValues.sharedPreferences!.setStringList(
+        'products',
+        _products.map((e) => e.toJson()).toList(),
+      );
     } catch (e) {
       if (kDebugMode) {
         print('Error saving products: $e');

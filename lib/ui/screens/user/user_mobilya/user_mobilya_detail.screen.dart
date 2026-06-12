@@ -1,9 +1,7 @@
 import 'package:bikrra_app/classes/product.class.dart';
-import 'package:bikrra_app/classes/product_category.class.dart';
 import 'package:bikrra_app/constants/app_colors.dart';
-import 'package:bikrra_app/utils/methods.dart';
 import 'package:bikrra_app/providers/product_cart.provider.dart';
-import 'package:flutter/foundation.dart';
+import 'package:bikrra_app/utils/methods.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -11,10 +9,8 @@ import 'package:provider/provider.dart';
 class UserMobilyaDetailScreen extends StatefulWidget {
   final ProductC product;
 
-  const UserMobilyaDetailScreen({
-    Key? key,
-    required this.product,
-  }) : super(key: key);
+  const UserMobilyaDetailScreen({Key? key, required this.product})
+      : super(key: key);
 
   @override
   State<UserMobilyaDetailScreen> createState() =>
@@ -23,255 +19,332 @@ class UserMobilyaDetailScreen extends StatefulWidget {
 
 class _UserMobilyaDetailScreenState extends State<UserMobilyaDetailScreen> {
   int count = 1;
-  int totalPrice = 0;
 
-  @override
-  void initState() {
-    totalPrice = widget.product.price;
-    super.initState();
+  int get totalPrice => count * widget.product.price;
+
+  void _changeQuantity(int value) {
+    setState(() {
+      count = (count + value).clamp(1, 99);
+    });
+  }
+
+  void _addToCart() {
+    context.read<ProductCartProvider>().addProduct(
+          ProductC(
+            id: widget.product.id,
+            name: widget.product.name,
+            description: widget.product.description,
+            price: widget.product.price,
+            image: widget.product.image,
+            category: widget.product.category,
+            quantity: count,
+          ),
+        );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Ø²ÛŒØ§Ø¯ Ú©Ø±Ø§ Ø¨Û† Ù„ÛŒØ³Øª')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                SizedBox(
-                  height: 400,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.mainPinkColor.withOpacity(0.7),
-                      image: DecorationImage(
-                        image: AssetImage(widget.product.image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.mainPinkColor.withOpacity(0.3),
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 40),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: const CircleAvatar(
-                                      backgroundColor: AppColors.mainPinkColor,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Icon(
-                                          FontAwesomeIcons.chevronRight,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: const Icon(
-                                        FontAwesomeIcons.heart,
-                                        color: AppColors.mainPinkColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                ),
-                Positioned(
-                  top: 380,
-                  left: MediaQuery.of(context).size.width / 2 - 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: const Color(0xFFFF99B8)),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  count--;
-                                  totalPrice = count * widget.product.price;
-                                  if (count < 1) {
-                                    count = 1;
-                                    totalPrice = widget.product.price;
-                                  }
-                                });
-                              },
-                              splashColor: AppColors.cakePinkColor,
-                              hoverColor: AppColors.cakePinkColor,
-                              focusColor: AppColors.cakePinkColor,
-                              iconSize: 25,
-                              icon: const Icon(FontAwesomeIcons.minus,
-                                  color: Colors.white),
-                            ),
-                            CircleAvatar(
-                              backgroundColor: AppColors.mainPinkColor,
-                              child: Text(
-                                count.toString(),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  count++;
-                                  totalPrice = count * widget.product.price;
-                                });
-                              },
-                              splashColor: AppColors.cakePinkColor,
-                              hoverColor: AppColors.cakePinkColor,
-                              focusColor: AppColors.cakePinkColor,
-                              iconSize: 30,
-                              icon: const Icon(FontAwesomeIcons.plus,
-                                  color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+      backgroundColor: const Color(0xFFFFF8FA),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        child: SizedBox(
+          height: 56,
+          child: ElevatedButton.icon(
+            onPressed: _addToCart,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.mainPinkColor,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            icon: const Icon(FontAwesomeIcons.cartShopping, size: 18),
+            label: const Text(
+              'Ø²ÛŒØ§Ø¯Ú©Ø±Ø¯Ù† Ø¨Û† Ù„ÛŒØ³Øª',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 360,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: AppColors.mainPinkColor,
+            leading: Padding(
+              padding: const EdgeInsets.all(8),
+              child: _HeaderButton(
+                icon: FontAwesomeIcons.chevronRight,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: _HeaderButton(
+                  icon: FontAwesomeIcons.heart,
+                  iconColor: AppColors.mainPinkColor,
+                  onPressed: () {},
+                ),
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
                 children: [
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.product.name,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        '${priceWithComma(widget.product.price)} دينار',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: AppColors.mainPinkColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.product.description,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 10),
-                  const SizedBox(height: 10),
-                  Text(
-                    'نرخی گشتی: ${priceWithComma(totalPrice)}دينار',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: AppColors.kButtonsAndSecondaryBrownColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.symmetric(horizontal: 40),
+                  Image.asset(widget.product.image, fit: BoxFit.cover),
+                  DecoratedBox(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: AppColors.mainPinkColor),
-                    child: MaterialButton(
-                      onPressed: () {
-                        context.read<ProductCartProvider>().addProduct(
-                              ProductC(
-                                id: widget.product.id,
-                                name: widget.product.name,
-                                description: widget.product.description,
-                                price: widget.product.price,
-                                image: widget.product.image,
-                                category: ProductCategoryC(
-                                  id: widget.product.category.id,
-                                  name: widget.product.category.name,
-                                  description:
-                                      widget.product.category.description,
-                                  image: widget.product.category.image,
-                                  status: widget.product.category.status,
-                                ),
-                                quantity: count,
-                              ),
-                            );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('زیاد کرا بۆ لیست'),
-                          ),
-                        );
-                      },
-                      child: const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              FontAwesomeIcons.cartShopping,
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'زیادکردن بۆ لیست',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.08),
+                          AppColors.mainPinkColor.withValues(alpha: 0.18),
+                          Colors.black.withValues(alpha: 0.35),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-            )
-          ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Transform.translate(
+              offset: const Offset(0, -22),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFF8FA),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.product.name,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          _PricePill(price: widget.product.price),
+                        ],
+                      ),
+                      const SizedBox(height: 18),
+                      Text(
+                        widget.product.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          height: 1.6,
+                          color: AppColors.textColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      _PurchaseSummary(
+                        count: count,
+                        totalPrice: totalPrice,
+                        onMinus: () => _changeQuantity(-1),
+                        onPlus: () => _changeQuantity(1),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderButton extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback onPressed;
+
+  const _HeaderButton({
+    required this.icon,
+    required this.onPressed,
+    this.iconColor = Colors.black87,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.92),
+      shape: const CircleBorder(),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(icon, color: iconColor, size: 18),
+      ),
+    );
+  }
+}
+
+class _PricePill extends StatelessWidget {
+  final int price;
+
+  const _PricePill({required this.price});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cakePinkColor),
+      ),
+      child: Text(
+        '${priceWithComma(price)} Ø¯ÙŠÙ†Ø§Ø±',
+        style: const TextStyle(
+          fontSize: 16,
+          color: AppColors.mainPinkColor,
+          fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+}
+
+class _PurchaseSummary extends StatelessWidget {
+  final int count;
+  final int totalPrice;
+  final VoidCallback onMinus;
+  final VoidCallback onPlus;
+
+  const _PurchaseSummary({
+    required this.count,
+    required this.totalPrice,
+    required this.onMinus,
+    required this.onPlus,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.mainPinkColor.withValues(alpha: 0.16),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Ù†Ø±Ø®ÛŒ Ú¯Ø´ØªÛŒ',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${priceWithComma(totalPrice)} Ø¯ÙŠÙ†Ø§Ø±',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: AppColors.kButtonsAndSecondaryBrownColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _QuantityStepper(count: count, onMinus: onMinus, onPlus: onPlus),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuantityStepper extends StatelessWidget {
+  final int count;
+  final VoidCallback onMinus;
+  final VoidCallback onPlus;
+
+  const _QuantityStepper({
+    required this.count,
+    required this.onMinus,
+    required this.onPlus,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFEEF4),
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StepperButton(icon: FontAwesomeIcons.minus, onPressed: onMinus),
+          SizedBox(
+            width: 42,
+            child: Center(
+              child: Text(
+                count.toString(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: AppColors.kButtonsAndSecondaryBrownColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          _StepperButton(icon: FontAwesomeIcons.plus, onPressed: onPlus),
+        ],
+      ),
+    );
+  }
+}
+
+class _StepperButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _StepperButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 14),
+      color: AppColors.mainPinkColor,
+      splashRadius: 22,
     );
   }
 }
